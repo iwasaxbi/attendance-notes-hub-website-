@@ -172,10 +172,10 @@
   <section id="notesPage" class="notes-section" style="display:none;">
     <h2>Notes Library</h2>
     <p class="notes-subtitle">Browse and download notes by subject</p>
-    <div class="notes-container">
-      <div class="notes-subject-block">
+    <div class="notes-container" id="notesContainer">
+      <div class="notes-subject-block" data-subject="maths">
         <h3>MATHS</h3>
-        <ul class="notes-list">
+        <ul class="notes-list" id="notes-maths">
           <li>
             <span>Chapter 1 - Calculus Basics</span>
             <button class="download-note-btn">Download PDF</button>
@@ -186,9 +186,9 @@
           </li>
         </ul>
       </div>
-      <div class="notes-subject-block">
+      <div class="notes-subject-block" data-subject="dbms">
         <h3>DBMS</h3>
-        <ul class="notes-list">
+        <ul class="notes-list" id="notes-dbms">
           <li>
             <span>SQL Queries Complete Guide</span>
             <button class="download-note-btn">Download PDF</button>
@@ -199,18 +199,18 @@
           </li>
         </ul>
       </div>
-      <div class="notes-subject-block">
+      <div class="notes-subject-block" data-subject="os">
         <h3>OPERATING SYSTEM</h3>
-        <ul class="notes-list">
+        <ul class="notes-list" id="notes-os">
           <li>
             <span>Process Management</span>
             <button class="download-note-btn">Download PDF</button>
           </li>
         </ul>
       </div>
-      <div class="notes-subject-block">
+      <div class="notes-subject-block" data-subject="dsa">
         <h3>DSA</h3>
-        <ul class="notes-list">
+        <ul class="notes-list" id="notes-dsa">
           <li>
             <span>Arrays &amp; Strings</span>
             <button class="download-note-btn">Download PDF</button>
@@ -220,6 +220,22 @@
             <button class="download-note-btn">Download PDF</button>
           </li>
         </ul>
+      </div>
+      <div class="notes-subject-block" data-subject="html">
+        <h3>HTML</h3>
+        <ul class="notes-list" id="notes-html"></ul>
+      </div>
+      <div class="notes-subject-block" data-subject="css">
+        <h3>CSS</h3>
+        <ul class="notes-list" id="notes-css"></ul>
+      </div>
+      <div class="notes-subject-block" data-subject="javascript">
+        <h3>JAVASCRIPT</h3>
+        <ul class="notes-list" id="notes-javascript"></ul>
+      </div>
+      <div class="notes-subject-block" data-subject="python">
+        <h3>PYTHON</h3>
+        <ul class="notes-list" id="notes-python"></ul>
       </div>
     </div>
   </section>
@@ -245,16 +261,16 @@
       <div class="divider"><span>or continue with</span></div>
 
       <div class="social-login">
-        <button class="social-btn google" aria-label="Sign in with Google">
+        <button class="social-btn google demo-link" aria-label="Sign in with Google">
           <i class="fab fa-google"></i>
         </button>
-        <button class="social-btn facebook" aria-label="Sign in with Facebook">
+        <button class="social-btn facebook demo-link" aria-label="Sign in with Facebook">
           <i class="fab fa-facebook-f"></i>
         </button>
       </div>
 
       <p class="signup-text">
-        Don't have an account? <a href="#">Sign up</a>
+        Don't have an account? <a href="#" class="demo-link">Sign up</a>
       </p>
     </div>
   </div>
@@ -297,19 +313,19 @@
         <h3>OUR COMMUNITY</h3>
         <p>Join our growing community of students sharing knowledge and helping each other succeed. Upload your notes, download resources, and collaborate with peers! 🎓</p>
         <ul class="footer-links">
-          <li><a href="#"><i class="fas fa-users"></i> Student Community</a></li>
-          <li><a href="#"><i class="fas fa-question-circle"></i> Help &amp; Support</a></li>
-          <li><a href="#"><i class="fas fa-heart"></i> Contribute</a></li>
+          <li><a href="#" class="demo-link"><i class="fas fa-users"></i> Student Community</a></li>
+          <li><a href="#" class="demo-link"><i class="fas fa-question-circle"></i> Help &amp; Support</a></li>
+          <li><a href="#" class="demo-link"><i class="fas fa-heart"></i> Contribute</a></li>
         </ul>
       </div>
       <div class="footer-section">
         <h3>CONNECT WITH US</h3>
         <p>Follow us on social media for updates, tips, and more resources!</p>
         <div class="social-icons">
-          <a href="#" class="social-icon" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-          <a href="#" class="social-icon" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-          <a href="#" class="social-icon" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
-          <a href="#" class="social-icon" aria-label="GitHub"><i class="fab fa-github"></i></a>
+          <a href="#" class="social-icon demo-link" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+          <a href="#" class="social-icon demo-link" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+          <a href="#" class="social-icon demo-link" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+          <a href="#" class="social-icon demo-link" aria-label="GitHub"><i class="fab fa-github"></i></a>
         </div>
       </div>
     </div>
@@ -317,11 +333,11 @@
       <div class="footer-bottom-content">
         <p>&copy; 2025 Assignments &amp; Notes Hub. All rights reserved.</p>
         <div class="footer-bottom-links">
-          <a href="#">Privacy Policy</a>
+          <a href="#" class="demo-link">Privacy Policy</a>
           <span>•</span>
-          <a href="#">Terms of Use</a>
+          <a href="#" class="demo-link">Terms of Use</a>
           <span>•</span>
-          <a href="#">Contact</a>
+          <a href="#" class="demo-link">Contact</a>
         </div>
       </div>
     </div>
