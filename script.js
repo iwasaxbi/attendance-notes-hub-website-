@@ -1,141 +1,247 @@
-// Wait until full HTML document is loaded before running JS
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
 
-  // ---------------- NAVIGATION LINKS SETUP ----------------
-  // Get all navigation links from navbar
-  const navLinks = document.querySelectorAll("nav ul li a");
-
-  let loginLink = null;
-  let attendanceLink = null;
-  let uploadLink = null;
-
-  // Identify specific nav links based on text
-  navLinks.forEach(link => {
-    const text = link.textContent.trim().toLowerCase();
-    if (text === "login") loginLink = link;
-    if (text === "attendance") attendanceLink = link;
-    if (text === "upload") uploadLink = link;
-  });
-
-  // ---------------- PAGE SECTIONS REFERENCES ----------------
-  // Getting all major sections of the website
+  // ===== ELEMENT REFERENCES =====
   const modal = document.getElementById("loginModal");
   const loginForm = document.getElementById("loginForm");
   const attendanceSection = document.getElementById("attendancePage");
   const uploadSection = document.getElementById("uploadPage");
-  const skillsSection = document.querySelector(".skills");
+  const notesSection = document.getElementById("notesPage");
+  const skillsSection = document.getElementById("homePage");
   const heroSection = document.querySelector(".hero-banner");
+  const qrContainer = document.getElementById("qrCode");
+  const listContainer = document.getElementById("attendanceList");
+  const studentCountEl = document.getElementById("studentCount");
 
-  // ---------------- STATE VARIABLES ----------------
-  // Track login and attendance session states
+  // Nav links (by ID for reliability)
+  const homeNavLink = document.getElementById("homeNavLink");
+  const attendanceNavLink = document.getElementById("attendanceNavLink");
+  const uploadNavLink = document.getElementById("uploadNavLink");
+  const notesNavLink = document.getElementById("notesNavLink");
+  const loginNavLink = document.getElementById("loginNavLink");
+  const darkModeToggle = document.getElementById("darkModeToggle");
+
+  // Hamburger
+  const hamburger = document.getElementById("hamburger");
+  const mainNav = document.getElementById("mainNav");
+  const navOverlay = document.getElementById("navOverlay");
+
+  // ===== STATE =====
   let isLoggedIn = false;
   let attendanceActive = false;
   let currentQRCode = null;
-
-  // Set to prevent same QR reuse
   let usedCodes = new Set();
-
-  // Load saved attendance data from localStorage
   let attendanceList = JSON.parse(localStorage.getItem("attendanceList")) || [];
 
-  // ---------------- ATTENDANCE UI ELEMENTS ----------------
-  const qrContainer = document.getElementById("qrCode");
-  const listContainer = document.getElementById("attendanceList");
-  const studentCount = document.getElementById("studentCount");
+  // ===== TOAST HELPER =====
+  function showToast(msg) {
+    const toast = document.getElementById("toast");
+    toast.textContent = msg;
+    toast.classList.add("show");
+    setTimeout(() => toast.classList.remove("show"), 3000);
+  }
 
-  // ================= DARK MODE LOGIC =================
-  
-  const darkModeToggle = document.getElementById("darkModeToggle");
-  const body = document.body;
+  // ===== PAGE SWITCHER =====
+  function showPage(page) {
+    // Hide all pages
+    heroSection.style.display = "none";
+    skillsSection.style.display = "none";
+    attendanceSection.style.display = "none";
+    uploadSection.style.display = "none";
+    notesSection.style.display = "none";
 
-  // Check if dark mode was previously enabled
+    // Show requested page
+    if (page === "home") {
+      heroSection.style.display = "block";
+      skillsSection.style.display = "block";
+    } else if (page === "attendance") {
+      attendanceSection.style.display = "flex";
+    } else if (page === "upload") {
+      uploadSection.style.display = "flex";
+    } else if (page === "notes") {
+      notesSection.style.display = "block";
+    }
+
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    closeNav(); // always close mobile nav after navigating
+  }
+
+  // ===== HAMBURGER / MOBILE NAV =====
+  function openNav() {
+    hamburger.classList.add("open");
+    hamburger.setAttribute("aria-expanded", "true");
+    mainNav.classList.add("open");
+    navOverlay.classList.add("active");
+    document.body.style.overflow = "hidden";
+  }
+
+  function closeNav() {
+    hamburger.classList.remove("open");
+    hamburger.setAttribute("aria-expanded", "false");
+    mainNav.classList.remove("open");
+    navOverlay.classList.remove("active");
+    document.body.style.overflow = "";
+  }
+
+  hamburger.addEventListener("click", () => {
+    if (mainNav.classList.contains("open")) {
+      closeNav();
+    } else {
+      openNav();
+    }
+  });
+
+  navOverlay.addEventListener("click", closeNav);
+
+  // Close nav on ESC
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      closeNav();
+      modal.style.display = "none";
+      document.querySelectorAll(".custom-alert-overlay").forEach(el => el.style.display = "none");
+    }
+  });
+
+  // ===== DARK MODE =====
   if (localStorage.getItem("darkMode") === "enabled") {
-    body.classList.add("dark-mode");
+    document.body.classList.add("dark-mode");
     updateDarkModeIcon();
   }
 
-  // Toggle dark mode on button click
   darkModeToggle.addEventListener("click", () => {
-    body.classList.toggle("dark-mode");
-    
-    // Save preference to localStorage
-    if (body.classList.contains("dark-mode")) {
-      localStorage.setItem("darkMode", "enabled");
-    } else {
-      localStorage.setItem("darkMode", "disabled");
-    }
-    
+    document.body.classList.toggle("dark-mode");
+    localStorage.setItem("darkMode", document.body.classList.contains("dark-mode") ? "enabled" : "disabled");
     updateDarkModeIcon();
   });
 
-  // Update icon based on current mode
   function updateDarkModeIcon() {
     const icon = darkModeToggle.querySelector("i");
-    if (body.classList.contains("dark-mode")) {
-      icon.className = "fas fa-sun"; // Sun icon for dark mode
+    if (document.body.classList.contains("dark-mode")) {
+      icon.className = "fas fa-sun";
     } else {
-      icon.className = "fas fa-moon"; // Moon icon for light mode
+      icon.className = "fas fa-moon";
     }
   }
 
-  // ================= LOGIN LOGIC =================
-
-  // Handle Login / Logout button click
-  loginLink.addEventListener("click", (e) => {
+  // ===== HOME NAV =====
+  homeNavLink.addEventListener("click", (e) => {
     e.preventDefault();
-    e.stopPropagation();
+    showPage("home");
+  });
 
+  // ===== LOGIN / LOGOUT =====
+  loginNavLink.addEventListener("click", (e) => {
+    e.preventDefault();
+    closeNav();
     if (!isLoggedIn) {
-      // Show login modal if not logged in
       modal.style.display = "flex";
     } else {
-      // Logout process
       isLoggedIn = false;
-      loginLink.textContent = "Login";
-
-      // Reset visible sections
-      attendanceSection.style.display = "none";
-      uploadSection.style.display = "none";
-      skillsSection.style.display = "block";
-      heroSection.style.display = "block";
-
-      alert("You have been logged out!");
+      loginNavLink.textContent = "Login";
+      showPage("home");
+      showToast("You have been logged out!");
     }
   });
 
-  // Close modal when clicking outside
+  // Close modal when clicking backdrop
   modal.addEventListener("click", (e) => {
     if (e.target === modal) modal.style.display = "none";
   });
 
-  // Handle login form submission
+  // Login form submit
   loginForm.addEventListener("submit", (e) => {
     e.preventDefault();
+    const username = document.getElementById("username").value.trim();
+    if (!username) return;
 
-    // Demo login (no backend validation)
     modal.style.display = "none";
     isLoggedIn = true;
-    loginLink.textContent = "Logout";
+    loginNavLink.textContent = "Logout";
+    loginForm.reset();
 
-    alert("Login successful!");
+    showToast(`Welcome, ${username}! Login successful 🎉`);
   });
 
-  // ================= QR GENERATION =================
+  // ===== ATTENDANCE NAV =====
+  attendanceNavLink.addEventListener("click", (e) => {
+    e.preventDefault();
+    if (!isLoggedIn) {
+      closeNav();
+      document.getElementById("customAlert").style.display = "flex";
+      return;
+    }
+    showPage("attendance");
+    if (attendanceActive) generateQRCode();
+  });
 
-  // Function to generate a new QR code
+  // ===== UPLOAD NAV =====
+  uploadNavLink.addEventListener("click", (e) => {
+    e.preventDefault();
+    if (!isLoggedIn) {
+      closeNav();
+      document.getElementById("uploadAlert").style.display = "flex";
+      return;
+    }
+    showPage("upload");
+  });
+
+  // ===== NOTES NAV =====
+  notesNavLink.addEventListener("click", (e) => {
+    e.preventDefault();
+    showPage("notes");
+  });
+
+  // ===== GET STARTED BUTTON =====
+  const getStartedBtn = document.getElementById("getStartedBtn");
+  if (getStartedBtn) {
+    getStartedBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      if (!isLoggedIn) {
+        modal.style.display = "flex";
+      } else {
+        showPage("notes");
+      }
+    });
+  }
+
+  // ===== SEARCH FUNCTIONALITY =====
+  const searchInput = document.getElementById("searchInput");
+  if (searchInput) {
+    searchInput.addEventListener("input", () => {
+      const query = searchInput.value.trim().toLowerCase();
+      const cards = document.querySelectorAll(".skill-card");
+
+      cards.forEach(card => {
+        const subject = card.querySelector("h3").textContent.toLowerCase();
+        card.style.display = subject.includes(query) ? "block" : "none";
+      });
+    });
+  }
+
+  // ===== DOWNLOAD BUTTONS (skill cards) =====
+  document.querySelectorAll(".skill-card .download-btn").forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const subject = btn.closest(".skill-card").querySelector("h3").textContent;
+      showToast(`📥 ${subject} notes download started!`);
+    });
+  });
+
+  // ===== DOWNLOAD BUTTONS (notes library) =====
+  document.querySelectorAll(".download-note-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const title = btn.closest("li").querySelector("span").textContent;
+      showToast(`📥 Downloading: ${title}`);
+    });
+  });
+
+  // ===== QR CODE GENERATION =====
   function generateQRCode() {
-
-    // If attendance not active, do nothing
     if (!attendanceActive) return;
-
-    // Clear previous QR
     qrContainer.innerHTML = "";
 
-    // Generate random unique code
     const code = "ATTEND-" + Math.random().toString(36).substring(2, 10).toUpperCase();
     currentQRCode = code;
 
-    // Create QR using QRCode library
     new QRCode(qrContainer, {
       text: code,
       width: 200,
@@ -144,209 +250,102 @@ document.addEventListener("DOMContentLoaded", function() {
       colorLight: "#ffffff",
       correctLevel: QRCode.CorrectLevel.H
     });
-
-    console.log("QR Generated:", code);
   }
 
-  // ================= ATTENDANCE PAGE NAVIGATION =================
-
-  if (attendanceLink) {
-    attendanceLink.addEventListener("click", (e) => {
-      e.preventDefault();
-
-      // Prevent access if not logged in
-      if (!isLoggedIn) {
-        document.getElementById('customAlert').style.display = 'flex';
-        return;
-      }
-
-      // Hide other sections
-      skillsSection.style.display = "none";
-      heroSection.style.display = "none";
-      uploadSection.style.display = "none";
-      document.getElementById("notesPage").style.display = "none";
-
-      // Show attendance section
-      attendanceSection.style.display = "flex";
-
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-
-      // If already active, regenerate QR
-      if (attendanceActive) generateQRCode();
-    });
-  }
-
-  // ================= START / STOP ATTENDANCE =================
-
-  // Start attendance session
+  // ===== START ATTENDANCE =====
   document.getElementById("startAttendance").addEventListener("click", () => {
     attendanceActive = true;
     generateQRCode();
-    alert("Attendance started");
+    showToast("✅ Attendance started!");
   });
 
-  // Stop attendance session
+  // ===== STOP ATTENDANCE =====
   document.getElementById("stopAttendance").addEventListener("click", () => {
     attendanceActive = false;
-    qrContainer.innerHTML = "<p style='color:gray;'>Attendance stopped.</p>";
+    qrContainer.innerHTML = "<p style='color:gray; padding:20px;'>Attendance stopped.</p>";
     currentQRCode = null;
-    alert("Attendance stopped");
+    showToast("🔴 Attendance stopped.");
   });
 
-  // ================= SIMULATE QR SCAN =================
-
+  // ===== SIMULATE QR SCAN =====
   document.getElementById("simulateScan").addEventListener("click", () => {
-
     const name = document.getElementById("studentName").value.trim();
 
-    // Basic validations
-    if (!attendanceActive) return alert("Please start attendance first.");
-    if (!name) return alert("Enter student name.");
-    if (!currentQRCode) return alert("QR not found. Please restart attendance.");
+    if (!attendanceActive) { showToast("⚠️ Please start attendance first."); return; }
+    if (!name) { showToast("⚠️ Enter student name."); return; }
+    if (!currentQRCode) { showToast("⚠️ QR not found. Restart attendance."); return; }
 
-    // Prevent QR reuse
     if (usedCodes.has(currentQRCode)) {
-      alert("QR already used. Wait for next one.");
+      showToast("⚠️ QR already used. Wait for next one.");
       return;
     }
 
     usedCodes.add(currentQRCode);
 
-    // Record attendance entry
     const time = new Date().toLocaleTimeString();
-    const entry = { name, time };
-
-    attendanceList.push(entry);
-
-    // Save to localStorage
+    attendanceList.push({ name, time });
     localStorage.setItem("attendanceList", JSON.stringify(attendanceList));
 
-    renderList();
-
-    alert(`${name} marked present at ${time}`);
-
-    // Generate new QR after scan
+    renderAttendanceList();
+    showToast(`✅ ${name} marked present at ${time}`);
     generateQRCode();
-
     document.getElementById("studentName").value = "";
   });
 
-  // ================= RENDER ATTENDANCE LIST =================
-
-  function renderList() {
-
+  // ===== RENDER ATTENDANCE LIST =====
+  function renderAttendanceList() {
     listContainer.innerHTML = "";
-
     attendanceList.forEach((s, i) => {
       const li = document.createElement("li");
       li.textContent = `${i + 1}. ${s.name} — ${s.time}`;
       listContainer.appendChild(li);
     });
-
-    studentCount.textContent = attendanceList.length;
+    studentCountEl.textContent = attendanceList.length;
   }
 
-  renderList();
+  renderAttendanceList();
 
-  // ================= CLEAR ATTENDANCE =================
-
+  // ===== CLEAR ATTENDANCE =====
   document.getElementById("clearList").addEventListener("click", () => {
-
+    if (attendanceList.length === 0) { showToast("No records to clear."); return; }
     if (confirm("Clear all attendance records?")) {
-
       attendanceList = [];
       localStorage.removeItem("attendanceList");
-
-      renderList();
+      renderAttendanceList();
+      showToast("🗑 Attendance cleared.");
     }
   });
 
-  // ================= EXPORT TO CSV =================
-
+  // ===== EXPORT TO CSV =====
   document.getElementById("exportList").addEventListener("click", () => {
-
-    if (attendanceList.length === 0)
-      return alert("No attendance data to export.");
+    if (attendanceList.length === 0) { showToast("No attendance data to export."); return; }
 
     let csv = "Name,Time\n";
+    attendanceList.forEach(s => { csv += `${s.name},${s.time}\n`; });
 
-    attendanceList.forEach(s => {
-      csv += `${s.name},${s.time}\n`;
-    });
-
-    // Create downloadable CSV file
     const blob = new Blob([csv], { type: "text/csv" });
     const url = URL.createObjectURL(blob);
-
     const a = document.createElement("a");
     a.href = url;
     a.download = "attendance.csv";
     a.click();
+    showToast("📄 Attendance exported!");
   });
 
-  // ================= HOME NAVIGATION =================
-
-  const homeLink = navLinks[0];
-
-  if (homeLink) {
-    homeLink.addEventListener("click", (e) => {
+  // ===== UPLOAD FORM =====
+  const uploadForm = document.getElementById("uploadForm");
+  if (uploadForm) {
+    uploadForm.addEventListener("submit", (e) => {
       e.preventDefault();
-
-      skillsSection.style.display = "block";
-      heroSection.style.display = "block";
-      attendanceSection.style.display = "none";
-      uploadSection.style.display = "none";
-      document.getElementById("notesPage").style.display = "none";
-
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      const subject = document.getElementById("subject").value;
+      const title = document.getElementById("uploadTitle").value.trim();
+      showToast(`✅ "${title}" uploaded for ${subject.toUpperCase()}!`);
+      uploadForm.reset();
     });
   }
 
-  // ================= UPLOAD SECTION NAV =================
-
-  if (uploadLink) {
-    uploadLink.addEventListener("click", (e) => {
-      e.preventDefault();
-
-      if (!isLoggedIn) {
-        document.getElementById('uploadAlert').style.display = 'flex';
-        return;
-      }
-
-      skillsSection.style.display = "none";
-      heroSection.style.display = "none";
-      attendanceSection.style.display = "none";
-      document.getElementById("notesPage").style.display = "none";
-
-      uploadSection.style.display = "flex";
-
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
-  }
-
-  // ================= NOTES NAVIGATION =================
-
-  const notesLink = Array.from(navLinks)
-    .find(l => l.textContent.trim().toLowerCase() === "notes");
-
-  if (notesLink) {
-    notesLink.addEventListener("click", (e) => {
-      e.preventDefault();
-
-      skillsSection.style.display = "none";
-      heroSection.style.display = "none";
-      attendanceSection.style.display = "none";
-      uploadSection.style.display = "none";
-
-      document.getElementById("notesPage").style.display = "block";
-
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
-  }
-
-  // ================= ALERT CLOSE BUTTON =================
-
-  document.querySelectorAll(".alert-btn, .upload-alert-btn").forEach(btn => {
+  // ===== ALERT CLOSE BUTTONS =====
+  document.querySelectorAll(".alert-btn").forEach(btn => {
     btn.addEventListener("click", () => {
       btn.closest(".custom-alert-overlay").style.display = "none";
     });

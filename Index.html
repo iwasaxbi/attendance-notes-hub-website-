@@ -7,7 +7,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="style.css" />
-  
 </head>
 <body>
 
@@ -20,71 +19,86 @@
           <span class="logo-hub">HUB</span>
         </span>
       </h1>
-      <nav>
+
+      <!-- Hamburger button (mobile only) -->
+      <button class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <nav id="mainNav">
         <ul>
-          <li><a href="#">Home</a></li>
-          <li><a href="#">Attendance</a></li>
-          <li><a href="#">Upload</a></li>
-          <li><a href="#">Notes</a></li>
-          <li><a href="#">Login</a></li>
+          <li><a href="#" id="homeNavLink">Home</a></li>
+          <li><a href="#" id="attendanceNavLink">Attendance</a></li>
+          <li><a href="#" id="uploadNavLink">Upload</a></li>
+          <li><a href="#" id="notesNavLink">Notes</a></li>
+          <li><a href="#" id="loginNavLink">Login</a></li>
+          <li>
+            <button id="darkModeToggle" class="dark-mode-toggle" aria-label="Toggle dark mode">
+              <i class="fas fa-moon"></i>
+            </button>
+          </li>
         </ul>
       </nav>
     </div>
   </header>
 
+  <!-- Mobile nav overlay -->
+  <div class="nav-overlay" id="navOverlay"></div>
+
   <section class="hero-banner">
     <div class="hero-text">
-      <h2>All, your Assignments & Notes at one place
+      <h2>All your Assignments &amp; Notes at one place
         <span class="blinking-underscore">_</span>
         <span class="fire">🔥</span>
       </h2>
-      <p>Upload Search And Download Seamlessly  
-      <br>Welcome.  <span class="blinking-underscore">_</span>
+      <p>Upload, Search And Download Seamlessly<br>
+        Welcome. <span class="blinking-underscore">_</span>
         <span class="heart">❤️</span>
       </p>
     </div>
   </section>
 
-  <!-- Skills Section -->
-  <section class="skills">
-    <!-- search bar -->
+  <!-- Skills / Home Section -->
+  <section class="skills" id="homePage">
     <div class="search-bar">
       <span class="icon">🔍</span>
-      <input type="text" placeholder="Search Assignments, notes, anything...">
+      <input type="text" id="searchInput" placeholder="Search Assignments, notes, anything...">
     </div>
 
-    <a href="#" class="modern-btn">👉 GET STARTED</a>
+    <a href="#" class="modern-btn" id="getStartedBtn">👉 GET STARTED</a>
 
-    <div class="skills-grid">
-      <div class="skill-card">
+    <div class="skills-grid" id="skillsGrid">
+      <div class="skill-card" data-subject="maths">
         <h3>MATHS</h3>
         <button class="download-btn">Download Notes</button>
       </div>
-      <div class="skill-card">
+      <div class="skill-card" data-subject="dbms">
         <h3>DBMS</h3>
         <button class="download-btn">Download Notes</button>
       </div>
-      <div class="skill-card">
+      <div class="skill-card" data-subject="os">
         <h3>OPERATING SYSTEM</h3>
         <button class="download-btn">Download Notes</button>
       </div>
-      <div class="skill-card">
+      <div class="skill-card" data-subject="dsa">
         <h3>DSA</h3>
         <button class="download-btn">Download Notes</button>
       </div>
-      <div class="skill-card">
+      <div class="skill-card" data-subject="html">
         <h3>HTML</h3>
         <button class="download-btn">Download Notes</button>
       </div>
-      <div class="skill-card">
+      <div class="skill-card" data-subject="css">
         <h3>CSS</h3>
         <button class="download-btn">Download Notes</button>
       </div>
-      <div class="skill-card">
+      <div class="skill-card" data-subject="javascript">
         <h3>JAVASCRIPT</h3>
         <button class="download-btn">Download Notes</button>
       </div>
-      <div class="skill-card">
+      <div class="skill-card" data-subject="python">
         <h3>PYTHON</h3>
         <button class="download-btn">Download Notes</button>
       </div>
@@ -93,41 +107,36 @@
 
   <!-- Attendance Section -->
   <section id="attendancePage" class="attendance-section" style="display:none;">
-  <h2>Attendance</h2>
-  <p>Scan this QR code to mark your attendance:</p>
-  <div id="qrCode"></div>
+    <h2>Attendance</h2>
+    <p>Scan this QR code to mark your attendance:</p>
+    <div id="qrCode"></div>
 
-  <!-- Teacher Control Panel -->
-  <div class="teacher-controls glass-panel">
-    <button id="startAttendance" class="control-btn">🟢 Start Attendance</button>
-    <button id="stopAttendance" class="control-btn">🔴 Stop Attendance</button>
-    <button id="clearList" class="control-btn">🗑 Clear</button>
-    <button id="exportList" class="control-btn">📄 Export</button>
-  </div>
+    <div class="teacher-controls glass-panel">
+      <button id="startAttendance" class="control-btn">🟢 Start Attendance</button>
+      <button id="stopAttendance" class="control-btn">🔴 Stop Attendance</button>
+      <button id="clearList" class="control-btn">🗑 Clear</button>
+      <button id="exportList" class="control-btn">📄 Export</button>
+    </div>
 
-  <!-- Student Counter -->
-  <div class="counter-display">
-    <h3>Total Students Marked: <span id="studentCount">0</span></h3>
-  </div>
+    <div class="counter-display">
+      <h3>Total Students Marked: <span id="studentCount">0</span></h3>
+    </div>
 
-  <!-- Attendance List -->
-  <div class="attendance-list glass-panel">
-    <h3>Attendance List</h3>
-    <ul id="attendanceList"></ul>
-  </div>
+    <div class="attendance-list glass-panel">
+      <h3>Attendance List</h3>
+      <ul id="attendanceList"></ul>
+    </div>
 
-  <!-- Simulation Area -->
-  <div class="simulation glass-panel">
-    <h3>🎓 Student QR Simulation</h3>
-    <input type="text" id="studentName" placeholder="Enter Student Name">
-    <button id="simulateScan" class="control-btn">Simulate Scan</button>
-  </div>
-</section>
-
+    <div class="simulation glass-panel">
+      <h3>🎓 Student QR Simulation</h3>
+      <input type="text" id="studentName" placeholder="Enter Student Name">
+      <button id="simulateScan" class="control-btn">Simulate Scan</button>
+    </div>
+  </section>
 
   <!-- Upload Section -->
   <section id="uploadPage" class="upload-section" style="display:none;">
-    <h2>Upload Notes & Assignments</h2>
+    <h2>Upload Notes &amp; Assignments</h2>
     <form id="uploadForm" class="upload-form">
       <div class="form-group">
         <label>Select Subject:</label>
@@ -143,31 +152,26 @@
           <option value="python">PYTHON</option>
         </select>
       </div>
-      
       <div class="form-group">
         <label>Title:</label>
         <input type="text" id="uploadTitle" placeholder="e.g., Chapter 5 - Calculus Notes" required>
       </div>
-      
       <div class="form-group">
         <label>Description (Optional):</label>
         <textarea id="uploadDesc" rows="3" placeholder="Brief description..."></textarea>
       </div>
-      
       <div class="form-group">
         <label>Choose File:</label>
         <input type="file" id="fileUpload" accept=".pdf,.doc,.docx,.ppt,.pptx" required>
       </div>
-      
       <button type="submit" class="upload-submit-btn">Upload File</button>
     </form>
   </section>
 
-  <!-- Notes Section - NOW SEPARATE FROM UPLOAD -->
+  <!-- Notes Section -->
   <section id="notesPage" class="notes-section" style="display:none;">
     <h2>Notes Library</h2>
     <p class="notes-subtitle">Browse and download notes by subject</p>
-    
     <div class="notes-container">
       <div class="notes-subject-block">
         <h3>MATHS</h3>
@@ -182,7 +186,6 @@
           </li>
         </ul>
       </div>
-
       <div class="notes-subject-block">
         <h3>DBMS</h3>
         <ul class="notes-list">
@@ -196,7 +199,6 @@
           </li>
         </ul>
       </div>
-
       <div class="notes-subject-block">
         <h3>OPERATING SYSTEM</h3>
         <ul class="notes-list">
@@ -206,16 +208,15 @@
           </li>
         </ul>
       </div>
-
       <div class="notes-subject-block">
         <h3>DSA</h3>
         <ul class="notes-list">
           <li>
-            <span>Arrays & Strings</span>
+            <span>Arrays &amp; Strings</span>
             <button class="download-note-btn">Download PDF</button>
           </li>
           <li>
-            <span>Trees & Graphs</span>
+            <span>Trees &amp; Graphs</span>
             <button class="download-note-btn">Download PDF</button>
           </li>
         </ul>
@@ -234,18 +235,14 @@
           <input type="text" id="username" required>
           <label for="username">Username</label>
         </div>
-
         <div class="input-group">
           <input type="password" id="password" required>
           <label for="password">Password</label>
         </div>
-
         <button type="submit" class="login-btn">Login</button>
       </form>
 
-      <div class="divider">
-        <span>or continue with</span>
-      </div>
+      <div class="divider"><span>or continue with</span></div>
 
       <div class="social-login">
         <button class="social-btn google" aria-label="Sign in with Google">
@@ -262,7 +259,7 @@
     </div>
   </div>
 
-  <!-- Custom Alert Modal for Attendance -->
+  <!-- Custom Alert - Attendance Login Required -->
   <div id="customAlert" class="custom-alert-overlay">
     <div class="custom-alert-box">
       <div class="alert-icon">🔒</div>
@@ -272,9 +269,7 @@
     </div>
   </div>
 
-
-
-  <!-- Custom Alert Modal for Upload -->
+  <!-- Custom Alert - Upload Login Required -->
   <div id="uploadAlert" class="custom-alert-overlay">
     <div class="custom-alert-box upload-alert-style">
       <div class="alert-icon">📤</div>
@@ -284,54 +279,43 @@
     </div>
   </div>
 
+  <!-- Toast Notification -->
+  <div id="toast" class="toast"></div>
 
-  
-
-  <!-- Footer Section -->
+  <!-- Footer -->
   <footer class="footer">
     <div class="footer-container">
       <div class="footer-section">
         <h3>ABOUT US</h3>
-        <p>Assignments & Notes Hub is a platform created by students, for students. We provide a centralized space to share, access, and organize academic materials seamlessly. Our goal is to make learning resources accessible to everyone.</p>
+        <p>Assignments &amp; Notes Hub is a platform created by students, for students. We provide a centralized space to share, access, and organize academic materials seamlessly.</p>
         <div class="footer-email">
           <i class="fas fa-envelope"></i>
           <a href="mailto:hello@noteshub.com">hello@noteshub.com</a>
         </div>
       </div>
-
       <div class="footer-section">
         <h3>OUR COMMUNITY</h3>
         <p>Join our growing community of students sharing knowledge and helping each other succeed. Upload your notes, download resources, and collaborate with peers! 🎓</p>
         <ul class="footer-links">
           <li><a href="#"><i class="fas fa-users"></i> Student Community</a></li>
-          <li><a href="#"><i class="fas fa-question-circle"></i> Help & Support</a></li>
+          <li><a href="#"><i class="fas fa-question-circle"></i> Help &amp; Support</a></li>
           <li><a href="#"><i class="fas fa-heart"></i> Contribute</a></li>
         </ul>
       </div>
-
       <div class="footer-section">
         <h3>CONNECT WITH US</h3>
         <p>Follow us on social media for updates, tips, and more resources!</p>
         <div class="social-icons">
-          <a href="#" class="social-icon" aria-label="Instagram">
-            <i class="fab fa-instagram"></i>
-          </a>
-          <a href="#" class="social-icon" aria-label="Twitter">
-            <i class="fab fa-twitter"></i>
-          </a>
-          <a href="#" class="social-icon" aria-label="LinkedIn">
-            <i class="fab fa-linkedin-in"></i>
-          </a>
-          <a href="#" class="social-icon" aria-label="GitHub">
-            <i class="fab fa-github"></i>
-          </a>
+          <a href="#" class="social-icon" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+          <a href="#" class="social-icon" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+          <a href="#" class="social-icon" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+          <a href="#" class="social-icon" aria-label="GitHub"><i class="fab fa-github"></i></a>
         </div>
       </div>
     </div>
-
     <div class="footer-bottom">
       <div class="footer-bottom-content">
-        <p>&copy; 2025 Assignments & Notes Hub. All rights reserved.</p>
+        <p>&copy; 2025 Assignments &amp; Notes Hub. All rights reserved.</p>
         <div class="footer-bottom-links">
           <a href="#">Privacy Policy</a>
           <span>•</span>
